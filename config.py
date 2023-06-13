@@ -1,6 +1,6 @@
 import os
-# import dotenv
-# dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+import dotenv
+dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 print(os.environ.get("DJANGO_SECRET_KEY"))
 DJANGO_SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",

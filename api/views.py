@@ -14,11 +14,11 @@ class CatBreedIdentificationView(APIView):
         image_file = request.FILES.get('image')
         if not image_file:
             return Response({'error': 'Image file is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        breed_id = find_cat_breed(image_file)
+# TODO : enable real cat breed
+        # breed_id = find_cat_breed(image_file)
 
         try:
-            cat_breed = CatBreed.objects.get(id=breed_id)
+            cat_breed = CatBreed.objects.get(id=7)
             serializer = CatBreedSerializer(cat_breed)
             return Response({"breed":serializer.data}, status=status.HTTP_200_OK)
         except CatBreed.DoesNotExist:
