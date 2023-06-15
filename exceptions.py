@@ -9,7 +9,6 @@ from rest_framework import status as HttpStatus
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
-
 class ErrorStatus(Enum):
     """Defines error status based on API standards."""
 
@@ -199,10 +198,23 @@ def custom_exception_handler(exc, context):
     if response is not None:
         if isinstance(exc, CustomAPIException):
             # custom defined exceptions (should always have default code)
-
             custom_error = APIStandardError(
                 message=str(exc), status=ErrorStatus(exc.default_code)
             )
+        elif isinstance(exc, exceptions.ValidationError):
+            # map validation errors to invalid argument error status
+            error_messages = []
+            for field, errors in exc.get_full_details().items():
+                current_field_codes =[]
+                for error in errors:
+                    current_field_codes.append(error['code'])
+                error_messages.append({f"{field}":current_field_codes})
+            custom_error = APIStandardError(
+                message="Validation Error",
+                status=ErrorStatus.INVALID_ARGUMENT,
+                details=error_messages,
+            )
+
         else:
             # django defined exception
             # map django exception to our allowed exceptions
@@ -238,8 +250,6 @@ def custom_exception_handler(exc, context):
                 elif len(supported_error_status) > 1:
                     # If multiple error status have the same status code return the first
                     # and provide all possible status as detail
-                    print(exc)
-                    print("type of exc", type(exc))
                     details = [
                         (
                             "Couldn't clearly distinguish status. Can be one of "
