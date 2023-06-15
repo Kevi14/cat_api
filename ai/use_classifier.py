@@ -6,8 +6,6 @@ import pandas as pd
 
 def find_cat_breed(image_file):
     PATH = 'ai_net.pth'
-    names_df = pd.read_csv('names.csv')
-
     model = Net()
     model.load_state_dict(torch.load(PATH))
     model.eval()

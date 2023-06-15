@@ -2,8 +2,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 import pandas as pd
-
-names_df = pd.read_csv('names.csv')
+from django.conf import settings
+import os
+file_path = os.path.join(settings.BASE_DIR, 'names.csv')
+names_df = pd.read_csv(file_path)
 
 class Net(nn.Module):
 
