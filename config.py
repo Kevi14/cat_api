@@ -7,6 +7,9 @@ DJANGO_SECRET_KEY = os.environ.get(
     None,
 )
 
+GOOGLE_CLIENT_ID= os.environ.get("GOOGLE_CLIENT_ID","")
+GOOGLE_SECRET=os.environ.get("GOOGLE_SECRET","")
+
 API_MOUNT_PATH = os.environ.get(
     "API_MOUNT_PATH",
     "v1",

@@ -45,10 +45,28 @@ INSTALLED_APPS = [
     # Third party
     "corsheaders",
     'rest_framework',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     # My apps
     'custom_auth',
     'api',
+    'library'
 ]
+SOCIALACCOUNT_LOGIN_ON_GET=True
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+SITE_ID = 1
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+GOOGLE_CLIENT_ID  = config.GOOGLE_CLIENT_ID
+SOCIAL_SECRET  = config.GOOGLE_SECRET
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -141,18 +159,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_RENDERER_CLASSES = ("renderer.ResponseEnvelopeRenderer",)
 
-REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": DEFAULT_RENDERER_CLASSES + ("rest_framework.renderers.BrowsableAPIRenderer", ),
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.MultiPartParser',  # Add this line
-    ],
-    "EXCEPTION_HANDLER": "exceptions.custom_exception_handler",
-    "DEFAULT_PAGINATION_CLASS": "paginator.CustomPaginator",
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-}
 
 # JWT
 SIMPLE_JWT = {
@@ -197,3 +203,29 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
 )
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": DEFAULT_RENDERER_CLASSES + ("rest_framework.renderers.BrowsableAPIRenderer", ),
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',  # Add this line
+    ],
+    "EXCEPTION_HANDLER": "exceptions.custom_exception_handler",
+    "DEFAULT_PAGINATION_CLASS": "paginator.CustomPaginator",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'custom_auth.authentication',  # Use the string representation of the import path
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
